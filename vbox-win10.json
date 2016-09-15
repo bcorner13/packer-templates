@@ -1,0 +1,44 @@
+{
+    "builders": [{
+    "type": "virtualbox-iso",
+    "vboxmanage": [
+      [ "modifyvm", "{{.Name}}", "--natpf1", "winrm,tcp,,55985,,5985" ],
+      [ "modifyvm", "{{.Name}}", "--memory", "5120" ],
+      [ "modifyvm", "{{.Name}}", "--vram", "36" ],
+      [ "modifyvm", "{{.Name}}", "--cpus", "2" ]
+    ],
+    "guest_os_type": "Windows10_64",
+    "iso_url": "{{ user `iso_url` }}",
+    "iso_checksum": "{{ user `iso_checksum` }}",
+    "iso_checksum_type": "md5",
+    "communicator": "winrm",
+    "headless": "{{ user `headless` }}",    
+    "winrm_username": "vagrant",
+    "winrm_password": "vagrant",
+    "winrm_timeout": "24h",
+    "shutdown_command": "C:/windows/system32/sysprep/sysprep.exe /generalize /oobe /unattend:C:/Windows/Panther/Unattend/unattend.xml /quiet /shutdown",
+    "shutdown_timeout": "15m",
+    "floppy_files": [
+      "{{user `autounattend`}}",
+      "answer_files/win10/postunattend.xml",
+      "scripts/fixnetwork.ps1",
+      "scripts/boxstarter.ps1",
+      "scripts/package.ps1",
+      "scripts/Test-Command.ps1"
+    ]
+  }],
+    "post-processors": [
+    {
+      "type": "vagrant",
+      "keep_input_artifact": true,
+      "output": "windows10-{{.Provider}}.box",
+      "vagrantfile_template": "vagrantfile-windows.template"
+    }
+  ],
+  "variables": {
+    "headless": "false",
+    "iso_checksum": "a0d4271b7537732a060909fd39d54829",
+    "iso_url": "/Users/bcorner/Projects/iso/Win10_1511_English_x64.iso",
+    "autounattend": "answer_files/win10/Autounattend.xml"
+  }
+}

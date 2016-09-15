@@ -80,6 +80,19 @@
       "vagrantfile_template": "vagrantfile-windows.template"
     },
     {
+      "type": "vsphere",
+      "keep_input_artifact": false,
+      "datacenter": "JAX",
+      "cluster": "JAX-Prod-Datacenter",
+      "host": "jaxf-vc101.fanatics.corp",
+      "datastore": "CML-SC8000-JAX",
+      "username": "svcvmware@FANATICS",
+      "password": "oeB1PsOXW08V",
+      "vm_name": "windows2012r2min-template",
+      "vm_folder": "Templates-by-Packer",
+      "vm_network": "vlan214-JaxInfrastructure"
+    },
+    {
       "type": "atlas",
       "only": ["virtualbox-iso-atlas"],
       "artifact": "mwrock/Windows2012R2{{user `core`}}",
