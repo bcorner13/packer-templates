@@ -1,20 +1,19 @@
 $ErrorActionPreference = "Stop"
 . a:\Test-Command.ps1
 
-Write-Host "Enabling file sharing firewale rules"
+Write-Host "Enabling file sharing firewall rules"
 netsh advfirewall firewall set rule group="File and Printer Sharing" new enable=yes
 
-if(Test-Path "C:\Users\vagrant\VBoxGuestAdditions.iso") {
+if(Test-Path "e:/VBoxWindowsAdditions.exe") {
     Write-Host "Installing Guest Additions"
-    certutil -addstore -f "TrustedPublisher" A:\oracle.cer
-    cinst 7zip.commandline -y
-    Move-Item C:\Users\vagrant\VBoxGuestAdditions.iso C:\Windows\Temp
-    7z x C:\Windows\Temp\VBoxGuestAdditions.iso -oC:\Windows\Temp\virtualbox
+    Get-ChildItem E:\cert\ -Filter vbox*.cer | ForEach-Object {
+        E:\cert\VBoxCertUtil.exe add-trusted-publisher $_.FullName --root $_.FullName
+    }
 
-    Start-Process -FilePath "C:\Windows\Temp\virtualbox\VBoxWindowsAdditions.exe" -ArgumentList "/S" -WorkingDirectory "C:\Windows\Temp\virtualbox" -Wait
+    mkdir "C:\Windows\Temp\virtualbox" -ErrorAction SilentlyContinue
+    Start-Process -FilePath "e:/VBoxWindowsAdditions.exe" -ArgumentList "/S" -WorkingDirectory "C:\Windows\Temp\virtualbox" -Wait
 
     Remove-Item C:\Windows\Temp\virtualbox -Recurse -Force
-    Remove-Item C:\Windows\Temp\VBoxGuestAdditions.iso -Force
 }
 
 Write-Host "Cleaning SxS..."
@@ -66,7 +65,7 @@ finally {
         $Stream.Close()
     }
 }
- 
+
 Del $FilePath
 
 Write-Host "copying auto unattend file"
